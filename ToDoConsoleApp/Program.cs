@@ -6,7 +6,7 @@ namespace ToDoConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Menu.Principal();
         }
     }
 }
