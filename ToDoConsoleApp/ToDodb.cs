@@ -7,13 +7,13 @@ namespace ToDoConsoleApp
     static class ToDodb
     {
         private const string DBName = "ToDo.sqlite";
-        static private string connectionString = @"Data Source =" + Path.GetFullPath(DBName);
+        private static readonly string _connectionString = @"Data Source =" + Path.GetFullPath(DBName);
 
         static private void CreateDB()
         {
             SQLiteConnection.CreateFile(DBName);
 
-            using (var connection = new SQLiteConnection(connectionString))
+            using (var connection = new SQLiteConnection(_connectionString))
             {
                 connection.Open();
                 string sql = "CREATE TABLE TodoList " +
@@ -29,7 +29,7 @@ namespace ToDoConsoleApp
             {
                 CreateDB();
             }
-            using var connection = new SQLiteConnection(connectionString);
+            using var connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
             string queryString = "SELECT * FROM TodoList";
@@ -51,7 +51,7 @@ namespace ToDoConsoleApp
 
         static public void AddItem(TodoItem newItem)
         {
-            using var connection = new SQLiteConnection(connectionString);
+            using var connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
             using var command = new SQLiteCommand(connection);
@@ -68,7 +68,7 @@ namespace ToDoConsoleApp
 
         static public void DeleteItem(int id)
         {
-            using var connection = new SQLiteConnection(connectionString);
+            using var connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
             using var command = new SQLiteCommand(connection);
@@ -79,7 +79,7 @@ namespace ToDoConsoleApp
 
         static public void ViewOneItem(string id)
         {
-            using var connection = new SQLiteConnection(connectionString);
+            using var connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
             string queryString = "SELECT * FROM TodoList WHERE id=" + id;
@@ -91,7 +91,7 @@ namespace ToDoConsoleApp
             {
                 Console.WriteLine($"id: {reader.GetInt32(0)}");
                 Console.WriteLine($"Title: {reader.GetString(1)}");
-                Console.WriteLine($"Description:  {reader.GetString(1)}");
+                Console.WriteLine($"Description:  {reader.GetString(2)}");
                 if (reader.GetInt32(3) == 1)
                     Console.WriteLine("Completed: [x]");
                 else
@@ -103,7 +103,7 @@ namespace ToDoConsoleApp
         static public void ChangeCompleted(string id)
         {
             int completed = 1;
-            using var connection = new SQLiteConnection(connectionString);
+            using var connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
             string queryString = "SELECT completed FROM TodoList WHERE id=" + id;
